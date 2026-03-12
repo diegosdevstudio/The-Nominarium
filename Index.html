@@ -3,382 +3,229 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Nominarium — DiegosDevStudio — AI Brand Identity Oracle</title>
+<title>The Nominarium — DiegosDevStudio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* ════════════════════════════════════════════════
-   THE NOMINARIUM v2.0 — Deep Midnight UI
-   Brand Colors: #22D3EE (Cyan) to #2563EB (Blue)
-   Background: #0B0F19 (Deep Obsidian)
-════════════════════════════════════════════════ */
 :root {
   --bg: #0B0F19;
-  --bg2: #0f1520;
   --cyan: #22D3EE;
   --blue: #2563EB;
   --text: #F8FAFC;
   --text-muted: #94A3B8;
   --glass: rgba(255,255,255,0.04);
   --glass-border: rgba(255,255,255,0.08);
-  --glow-cyan: rgba(34,211,238,0.15);
-  --glow-blue: rgba(37,99,235,0.2);
 }
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
 
 body {
-  background-color: var(--bg); /* Dashes fixed. background color locked to dark */
-  background: var(--bg);
+  background-color: var(--bg);
   color: var(--text);
   font-family: 'Outfit', sans-serif;
+  margin: 0;
   min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
 }
 
-/* ── Background Grid ───────────────────────────── */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(34,211,238,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34,211,238,0.03) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(34,211,238,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,0.03) 1px, transparent 1px);
   background-size: 60px 60px;
-  pointer-events: none;
   z-index: -1;
 }
 
-/* ── Nav ───────────────────────────────────────── */
 nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
-  height: 64px;
-  background: rgba(11,15,25,0.8);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.nav-brand {
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 700;
-  font-size: 1.1rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  background: linear-gradient(135deg, var(--cyan), var(--blue));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.btn-settings {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  color: var(--text-muted);
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-settings:hover { border-color: var(--cyan); color: var(--cyan); }
-
-/* ── Main Layout ────────────────────────────────── */
-main { position: relative; z-index: 1; padding-top: 100px; padding-bottom: 100px; }
-
-/* ── Hero ───────────────────────────────────────── */
-.hero { text-align: center; margin-bottom: 60px; padding: 0 2rem; }
-.hero-title { 
-  font-size: clamp(2.5rem, 8vw, 5rem); 
-  font-weight: 900; 
-  line-height: 1; 
-  margin-bottom: 1rem;
-}
-.hero-title span {
-  background: linear-gradient(135deg, var(--cyan) 0%, #60A5FA 50%, var(--blue) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.command-panel { max-width: 800px; margin: 0 auto; padding: 0 2rem; display: flex; flex-direction: column; gap: 20px; }
-
-/* ── Panels ─────────────────────────────────────── */
-.panel-section {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 24px;
-  backdrop-filter: blur(10px);
-}
-
-.section-label {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  color: var(--cyan);
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  display: flex;
   align-items: center;
-  gap: 8px;
+  padding: 1rem 2rem;
+  background: rgba(11,15,25,0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
-.section-label::after { content: ''; flex: 1; height: 1px; background: rgba(34,211,238,0.1); }
 
-textarea#vision {
+.nav-brand { font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: 2px; color: var(--cyan); text-transform: uppercase; }
+
+.container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+
+.hero { text-align: center; margin-bottom: 40px; }
+.hero h1 { font-size: 3.5rem; margin: 0; font-weight: 900; }
+.hero h1 span { background: linear-gradient(135deg, var(--cyan), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+.panel {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 30px;
+  backdrop-filter: blur(10px);
+  margin-bottom: 20px;
+}
+
+.input-group { margin-bottom: 25px; }
+.input-label { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--cyan); text-transform: uppercase; margin-bottom: 10px; display: block; }
+.input-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+
+input, textarea {
   width: 100%;
-  min-height: 120px;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.3);
   border: 1px solid var(--glass-border);
   border-radius: 8px;
-  color: var(--text);
-  padding: 15px;
+  padding: 12px;
+  color: white;
   font-family: inherit;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  resize: vertical;
   outline: none;
 }
-textarea#vision:focus { border-color: rgba(34,211,238,0.4); }
+input:focus, textarea:focus { border-color: var(--cyan); }
 
-/* ── Chips ──────────────────────────────────────── */
-.chips-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .chip {
-  padding: 6px 14px;
+  padding: 6px 15px;
   border-radius: 20px;
   border: 1px solid var(--glass-border);
-  background: rgba(255,255,255,0.03);
-  color: var(--text-muted);
   font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: 0.2s;
+  color: var(--text-muted);
 }
-.chip.active {
-  border-color: var(--cyan);
-  background: rgba(34,211,238,0.1);
-  color: var(--cyan);
-  box-shadow: 0 0 10px rgba(34,211,238,0.2);
-}
+.chip.active { background: rgba(34,211,238,0.1); border-color: var(--cyan); color: var(--cyan); }
 
-/* ── Action Button ──────────────────────────────── */
-.btn-generate {
+.btn-forge {
   width: 100%;
-  padding: 18px;
+  padding: 20px;
   background: linear-gradient(135deg, var(--cyan), var(--blue));
   border: none;
   border-radius: 12px;
   color: white;
   font-weight: 700;
-  font-family: 'Rajdhani', sans-serif;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 2px;
   cursor: pointer;
-  margin-top: 10px;
-  transition: all 0.2s;
 }
-.btn-generate:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 20px rgba(34,211,238,0.2); }
-.btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* ── Identity Cards ─────────────────────────────── */
-#results-area { max-width: 800px; margin: 40px auto; padding: 0 2rem; }
-.identity-card {
+#results { margin-top: 40px; }
+.card {
   background: rgba(255,255,255,0.03);
   border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 30px;
-  margin-top: 20px;
-  backdrop-filter: blur(20px);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.2s;
+  border-radius: 16px;
+  padding: 25px;
+  margin-bottom: 20px;
 }
-.identity-card:hover { transform: translateY(-3px); border-color: rgba(34,211,238,0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+.card-name { font-size: 2rem; color: var(--cyan); font-weight: 800; margin-bottom: 10px; }
+.card-soul { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
 
-.card-name { font-size: 2.5rem; font-weight: 800; line-height: 1; margin-bottom: 10px; color: var(--text); }
-.card-soul { color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; font-weight: 300; }
-
-.swatch-color { width: 40px; height: 40px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
-
-/* ── Modals ─────────────────────────────────────── */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-  display: none; align-items: center; justify-content: center; z-index: 1000;
-}
-.modal-overlay.visible { display: flex; }
-.modal { background: #0F172A; padding: 30px; border-radius: 16px; width: 100%; max-width: 420px; border: 1px solid var(--glass-border); }
-
-/* ── Error Banner ───────────────────────────────── */
-.error-banner {
-  background: rgba(239,68,68,0.1);
-  border: 1px solid rgba(239,68,68,0.3);
-  color: #FCA5A5;
-  border-radius: 10px;
-  padding: 15px;
-  margin-top: 10px;
-  font-size: 0.85rem;
+.modal {
   display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
+.modal-content { background: #0F172A; padding: 30px; border-radius: 16px; width: 400px; border: 1px solid var(--glass-border); }
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="nav-brand">DiegosDev Studio — The Nominarium</div>
-  <button class="btn-settings" onclick="openSettings()">Configure API</button>
+  <div class="nav-brand">DIEGOSDEV STUDIO</div>
+  <button onclick="toggleModal(true)" style="background:none; border:1px solid var(--glass-border); color:white; padding:5px 15px; border-radius:5px; cursor:pointer;">API Key</button>
 </nav>
 
-<main>
-  <section class="hero">
-    <div style="font-family:'Space Mono',monospace;color:var(--cyan);font-size:0.7rem;">// Brand Identity Oracle — v2.0</div>
-    <h1 class="hero-title">The<br><span>Nominarium</span></h1>
-    <p style="color:var(--text-muted);max-width:500px;margin:0 auto 20px;">Transmit your vision. Receive identities forged from language, logic, and luxury. Designed for creative directors.</p>
-  </section>
+<div class="container">
+  <div class="hero">
+    <div style="font-family:'Space Mono',monospace; font-size:0.7rem; color:var(--cyan);">// NOMINARIUM ENGINE V2.0</div>
+    <h1>The <span>Nominarium</span></h1>
+    <p style="color:var(--text-muted);">The Official Repository For Originality</p>
+  </div>
 
-  <div class="command-panel">
-    <div class="panel-section">
-      <div class="section-label">01 — Brand Vision</div>
-      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:10px;">Describe the business, its purpose, audience, and what makes it unlike anything else. The more precise your vision, the more resonant the names.</p>
-      <textarea id="vision" placeholder=" Describe your brand vision... e.g. 'A luxury watch brand for deep-sea explorers.'"></textarea>
+  <div class="panel">
+    <div class="input-group">
+      <span class="input-label">1. Define the Entity</span>
+      <p class="input-desc">What is the specific purpose of this name?</p>
+      <input type="text" id="q1" placeholder="e.g., Luxury Skincare, Global SaaS, Fintech Startup">
     </div>
 
-    <div class="panel-section">
-      <div class="section-label">02 — Luxury Essence</div>
-      <div class="chips-grid" id="chips-container">
-        <div class="chip" onclick="toggleChip(this)">Heritage</div>
-        <div class="chip" onclick="toggleChip(this)">Avant-Garde</div>
-        <div class="chip" onclick="toggleChip(this)">Minimalist</div>
-        <div class="chip" onclick="toggleChip(this)">Sustainable</div>
-        <div class="chip" onclick="toggleChip(this)">Disruptive</div>
-        <div class="chip" onclick="toggleChip(this)">Kinetic</div>
-        <div class="chip" onclick="toggleChip(this)">Ethereal</div>
-        <div class="chip" onclick="toggleChip(this)">Brutalist</div>
-        <div class="chip" onclick="toggleChip(this)">Neo-Classic</div>
-        <div class="chip" onclick="toggleChip(this)">Bespoke</div>
+    <div class="input-group">
+      <span class="input-label">2. Establish Identity Parameters</span>
+      <p class="input-desc">Target audience or gender profile?</p>
+      <input type="text" id="q2" placeholder="e.g., High-net-worth individuals, Gen Z, Masculine">
+    </div>
+
+    <div class="input-group">
+      <span class="input-label">3. Identify Conceptual Vectors</span>
+      <p class="input-desc">Core themes, genres, or emotional impacts?</p>
+      <textarea id="q3" placeholder="e.g., Ancient Greek myths, Cyberpunk minimalism, Timeless elegance"></textarea>
+    </div>
+
+    <div class="input-group">
+      <span class="input-label">4. Specify Constraint Parameters</span>
+      <p class="input-desc">Any letters or sounds to AVOID?</p>
+      <input type="text" id="q4" value="None">
+    </div>
+
+    <div class="input-group">
+      <span class="input-label">Essence Selection</span>
+      <div class="chips">
+        <div class="chip" onclick="this.classList.toggle('active')">Heritage</div>
+        <div class="chip" onclick="this.classList.toggle('active')">Avant-Garde</div>
+        <div class="chip" onclick="this.classList.toggle('active')">Minimalist</div>
+        <div class="chip" onclick="this.classList.toggle('active')">Sustainable</div>
+        <div class="chip" onclick="this.classList.toggle('active')">Disruptive</div>
+        <div class="chip" onclick="this.classList.toggle('active')">Bespoke</div>
       </div>
     </div>
 
-    <div class="error-banner" id="error-banner"></div>
-
-    <button class="btn-generate" id="gen-btn" onclick="generate()">Forge Identities</button>
-    <div id="status" style="text-align: center; font-size: 0.8rem; color: var(--cyan); margin-top: 10px; display: none;">Processing Transmission...</div>
+    <button class="btn-forge" onclick="generate()">Generate Nomenclature</button>
   </div>
 
-  <div id="results-area"></div>
-</main>
+  <div id="results"></div>
+</div>
 
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <h2 style="font-family:'Rajdhani',sans-serif;margin-bottom:10px;">API Configuration</h2>
-    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:20px;">
-      Enter your Google Gemini API Key. VisiVault uses the free tier of the Gemini 1.5 model. Your key is stored only in your browser's localStorage. DiegosDevStudio does not collect or log your key.<br>
-      <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color:var(--cyan);">Get a key at aistudio.google.com →</a>
-    </p>
-    <input type="password" id="api-key-input" placeholder="AIza... Gemini API Key" style="width:100%;padding:12px;margin-bottom:20px;background:#000;color:white;border:1px solid var(--glass-border);font-family:'Space Mono',monospace;border-radius:8px;">
-    <button class="btn-generate" onclick="saveSettings()">Save Configuration</button>
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <h3>API Key</h3>
+    <input type="password" id="api-key" placeholder="Enter Gemini Key">
+    <button class="btn-forge" style="margin-top:20px;" onclick="saveKey()">Save</button>
   </div>
 </div>
 
 <script>
-// ── Advanced Logic from Claude ──
-const selectedEssences = new Set();
-let isGenerating = false;
-
-function toggleChip(el) {
-  const val = el.innerText;
-  if (selectedEssences.has(val)) {
-    selectedEssences.delete(val);
-    el.classList.remove('active');
-  } else {
-    selectedEssences.add(val);
-    el.classList.add('active');
-  }
-}
-
-function openSettings() { document.getElementById('modal').classList.add('visible'); }
-function saveSettings() {
-  localStorage.setItem('nominarium_key', document.getElementById('api-key-input').value);
-  document.getElementById('modal').classList.remove('visible');
-}
-
-// ── Stability with Retry Loops ──
-async function callGeminiWithRetry(prompt, retries = 3) {
-  const key = localStorage.getItem('nominarium_key');
-  for (let i = 1; i <= retries; i++) {
-    try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-      });
-      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-      return await response.json();
-    } catch (e) {
-      if (i === retries) throw e;
-      const status = document.getElementById('status');
-      status.innerText = `Error detected. Waiting and retrying... (Attempt ${i}/${retries})`;
-      await new Promise(r => setTimeout(r, 2000));
-    }
-  }
-}
+function toggleModal(show) { document.getElementById('modal').style.display = show ? 'flex' : 'none'; }
+function saveKey() { localStorage.setItem('nom_key', document.getElementById('api-key').value); toggleModal(false); }
 
 async function generate() {
-  const vision = document.getElementById('vision').value;
-  const key = localStorage.getItem('nominarium_key');
-  const errorBanner = document.getElementById('error-banner');
-  errorBanner.style.display = 'none';
+  const key = localStorage.getItem('nom_key');
+  if(!key) return alert("Add API Key");
+  
+  const status = document.getElementById('results');
+  status.innerHTML = '<p style="text-align:center; color:var(--cyan);">Forging identities...</p>';
 
-  if (!vision) { alert('Enter your vision description first.'); return; }
-  if (!key) return alert("Please set your API key in settings!");
-
-  isGenerating = true;
-  document.getElementById('gen-btn').disabled = true;
-  const status = document.getElementById('status');
-  status.style.display = 'block';
-
-  const prompt = `You are a professional brand consultant specializing in luxury identities. Generate exactly 5 premium brand names based on: "${vision}". Selection modifiers: ${[...selectedEssences].join(', ')}. Respond strictly in raw JSON array format: [{"name": "", "soul": "", "palette": "#hex, #hex, #hex — text style"}].`;
+  const prompt = `Generate 5 brand names. 
+  Entity: ${document.getElementById('q1').value}
+  Identity: ${document.getElementById('q2').value}
+  Vectors: ${document.getElementById('q3').value}
+  Constraints: ${document.getElementById('q4').value}
+  Respond ONLY as JSON array: [{"name": "", "soul": ""}]`;
 
   try {
-    const data = await callGeminiWithRetry(prompt);
-    const text = data.candidates[0].content.parts[0].text;
-    const json = JSON.parse(text.replace(/```json|```/g, ''));
-    renderCards(json);
-  } catch (e) {
-    errorBanner.innerText = `Transmission Error: ${e.message}. Please verify your key in settings.`;
-    errorBanner.style.display = 'block';
-  } finally {
-    isGenerating = false;
-    document.getElementById('gen-btn').disabled = false;
-    status.style.display = 'none';
-  }
-}
-
-function renderCards(data) {
-  const area = document.getElementById('results-area');
-  area.innerHTML = '';
-  data.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'identity-card';
-    card.innerHTML = `
-      <div class="card-name">${item.name}</div>
-      <div class="card-soul">${item.soul}</div>
-      <p style="font-size:0.7rem;color:var(--text-muted);margin-bottom:5px;">Visual Palette</p>
-      <div style="display: flex; align-items: center; gap: 10px;">
-          ${item.palette.split(',').map(c => `<div class="swatch-color" style="background: ${c.trim()}"></div>`).join('')}
-          <div style="font-size:0.8rem;color:var(--text-muted);font-style:italic;">${item.palette.split('—')[1] || ''}</div>
-      </div>
-    `;
-    area.appendChild(card);
-  });
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({contents: [{parts: [{text: prompt}]}]})
+    });
+    const data = await res.json();
+    const cleanJson = JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, ''));
+    
+    status.innerHTML = '';
+    cleanJson.forEach(item => {
+      status.innerHTML += `<div class="card"><div class="card-name">${item.name}</div><div class="card-soul">${item.soul}</div></div>`;
+    });
+  } catch(e) { status.innerHTML = "Error forging nomenclature."; }
 }
 </script>
 </body>
