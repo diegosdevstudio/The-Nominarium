@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Nominarium — AI Brand Identity Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --bg: #0B0F19;
+  --bg2: #0f1520;
+  --cyan: #22D3EE;
+  --blue: #2563EB;
+  --orange: #FB923C;
+  --green: #34D399;
+  --text: #F8FAFC;
+  --text-muted: #94A3B8;
+  --glass: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
+  --glow-cyan: rgba(34,211,238,0.15);
+  --glow-orange: rgba(251,146,60,0.2);
+}
+
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content:''; position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none; z-index:0;
+  animation:gridDrift 30s linear infinite;
+}
+body::after {
+  content:''; position:fixed; top:-40%; left:-20%; width:80%; height:80%;
+  background:radial-gradient(ellipse, rgba(37,99,235,0.12) 0%, transparent 60%);
+  pointer-events:none; z-index:0;
+  animation:nebulaDrift 20s ease-in-out infinite alternate;
+}
+
+@keyframes gridDrift { from{background-position:0 0} to{background-position:60px 60px} }
+@keyframes nebulaDrift { from{transform:translate(0,0) scale(1)} to{transform:translate(10%,5%) scale(1.1)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes spin { to{transform:rotate(360deg)} }
+@keyframes cardReveal { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideIn { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+nav {
+  position:fixed; top:0; left:0; right:0;
+  z-index:200;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 2rem; height:64px;
+  background:rgba(11,15,25,0.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--glass-border);
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.logo-mark { width:36px; height:36px; flex-shrink:0; }
+.nav-brand {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.1rem;
+  letter-spacing:0.12em; text-transform:uppercase;
+  background:linear-gradient(135deg,var(--cyan),var(--blue));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.nav-right { display:flex; align-items:center; gap:8px; }
+
+.btn-nav {
+  background:var(--glass); border:1px solid var(--glass-border);
+  color:var(--text-muted); padding:6px 14px; border-radius:8px;
+  font-family:'Outfit',sans-serif; font-size:0.78rem; letter-spacing:0.08em;
+  cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; gap:6px; text-transform:uppercase;
+  white-space:nowrap;
+}
+.btn-nav:hover { border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 12px var(--glow-cyan); }
+
+/* ── MODEL ENGINE DROPDOWN ── */
+.model-engine-wrap {
+  position:relative;
+}
+
+.btn-model-engine {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 12px 6px 10px; border-radius:8px; cursor:pointer;
+  border:1px solid rgba(251,146,60,0.4);
+  background:rgba(251,146,60,0.08);
+  transition:all 0.2s;
+}
+.btn-model-engine:hover {
+  border-color:var(--orange);
+  background:rgba(251,146,60,0.14);
+  box-shadow:0 0 14px var(--glow-orange);
+}
+
+.model-engine-dot {
+  width:7px; height:7px; border-radius:50%;
+  background:var(--orange);
+  box-shadow:0 0 6px rgba(251,146,60,0.8);
+  flex-shrink:0;
+  animation:dotPulse 2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%,100%{opacity:1;box-shadow:0 0 6px rgba(251,146,60,0.8)}
+  50%{opacity:0.6;box-shadow:0 0 12px rgba(251,146,60,0.4)}
+}
+
+.model-engine-label {
+  font-family:'Space Mono',monospace; font-size:0.62rem;
+  letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--orange); white-space:nowrap;
+}
+.model-engine-chevron {
+  color:var(--orange); transition:transform 0.2s; flex-shrink:0;
+}
+.model-engine-wrap.open .model-engine-chevron { transform:rotate(180deg); }
+
+/* Dropdown panel */
+.model-engine-menu {
+  position:absolute; top:calc(100% + 8px); right:0;
+  width:220px;
+  background:rgba(11,15,25,0.97);
+  border:1px solid rgba(251,146,60,0.25);
+  border-radius:12px;
+  padding:8px;
+  display:none;
+  z-index:500;
+  box-shadow:0 16px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(251,146,60,0.08);
+  backdrop-filter:blur(20px);
+}
+.model-engine-wrap.open .model-engine-menu { display:block; }
+
+.model-menu-title {
+  font-family:'Space Mono',monospace; font-size:0.55rem;
+  letter-spacing:0.2em; color:var(--text-muted); text-transform:uppercase;
+  padding:6px 10px 10px;
+  border-bottom:1px solid var(--glass-border);
+  margin-bottom:6px;
+}
+
+.model-option {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 10px; border-radius:8px; cursor:pointer;
+  transition:background 0.15s;
+}
+.model-option:hover { background:rgba(255,255,255,0.05); }
+.model-option.active { background:rgba(251,146,60,0.1); }
+
+.model-option-dot {
+  width:8px; height:8px; border-radius:50%; flex-shrink:0;
+}
+.model-option-info { flex:1; min-width:0; }
+.model-option-name {
+  font-family:'Rajdhani',sans-serif; font-weight:700;
+  font-size:0.8rem; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--text); line-height:1.2;
+}
+.model-option-role {
+  font-family:'Space Mono',monospace; font-size:0.55rem;
+  letter-spacing:0.08em; color:var(--text-muted);
+  text-transform:uppercase; margin-top:2px;
+}
+.model-option.active .model-option-name { color:var(--orange); }
+.model-check {
+  color:var(--orange); flex-shrink:0; display:none;
+}
+.model-option.active .model-check { display:block; }
+
+/* ── SETTINGS BUTTON ── */
+.btn-settings-nav {
+  background:var(--glass); border:1px solid var(--glass-border);
+  color:var(--text-muted); padding:6px 14px; border-radius:8px;
+  font-family:'Outfit',sans-serif; font-size:0.78rem; letter-spacing:0.08em;
+  cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; gap:6px; text-transform:uppercase;
+}
+.btn-settings-nav:hover { border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 12px var(--glow-cyan); }
+
+/* ═══════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════ */
+.tab-bar {
+  display:flex; align-items:center; gap:0;
+  border-bottom:1px solid var(--glass-border);
+  background:rgba(11,15,25,0.5);
+  backdrop-filter:blur(10px);
+  position:sticky; top:64px; z-index:50;
+  padding:0 2rem;
+}
+.tab {
+  padding:14px 20px; cursor:pointer;
+  font-family:'Rajdhani',sans-serif; font-weight:600;
+  font-size:0.82rem; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text-muted); border-bottom:2px solid transparent;
+  transition:all 0.2s; display:flex; align-items:center; gap:7px;
+  margin-bottom:-1px;
+}
+.tab:hover { color:var(--text); }
+.tab.active { color:var(--orange); border-bottom-color:var(--orange); }
+.tab-badge {
+  font-family:'Space Mono',monospace; font-size:0.58rem;
+  background:rgba(251,146,60,0.12); color:var(--orange);
+  border:1px solid rgba(251,146,60,0.2); border-radius:100px;
+  padding:1px 7px; display:none;
+}
+.tab-badge.visible { display:inline-block; }
+
+.page { display:none; }
+.page.active { display:block; }
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+main { position:relative; z-index:1; padding-top:64px; min-height:100vh; }
+
+.hero { text-align:center; padding:72px 2rem 52px; }
+.hero-eyebrow {
+  font-family:'Space Mono',monospace; font-size:0.68rem;
+  letter-spacing:0.3em; color:var(--orange); text-transform:uppercase;
+  margin-bottom:18px; opacity:0; animation:fadeUp 0.8s 0.2s forwards;
+}
+.hero-title {
+  font-family:'Outfit',sans-serif; font-weight:900;
+  font-size:clamp(3rem,8vw,6.5rem); line-height:0.95;
+  letter-spacing:-0.03em; margin-bottom:20px;
+  opacity:0; animation:fadeUp 0.8s 0.4s forwards;
+}
+.hero-title span {
+  background:linear-gradient(135deg,var(--orange) 0%,#FCD34D 50%,var(--orange) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; display:block;
+}
+.hero-sub {
+  font-size:0.95rem; color:var(--text-muted); font-weight:300;
+  letter-spacing:0.04em; max-width:520px; margin:0 auto;
+  opacity:0; animation:fadeUp 0.8s 0.6s forwards; line-height:1.75;
+}
+
+/* ═══════════════════════════════════════════
+   COMMAND PANEL
+═══════════════════════════════════════════ */
+.command-panel {
+  max-width:920px; margin:0 auto; padding:40px 2rem 60px;
+  display:flex; flex-direction:column; gap:16px;
+  opacity:0; animation:fadeUp 0.8s 0.8s forwards;
+}
+
+.section-heading { display:flex; align-items:center; gap:12px; margin-bottom:4px; }
+.section-heading-label {
+  font-family:'Space Mono',monospace; font-size:0.6rem;
+  letter-spacing:0.28em; color:var(--orange); text-transform:uppercase; white-space:nowrap;
+}
+.section-heading-line { flex:1; height:1px; background:linear-gradient(90deg,rgba(251,146,60,0.3),transparent); }
+
+/* 4-vector grid */
+.vectors-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:680px) { .vectors-grid{grid-template-columns:1fr} }
+
+/* ── POWERED-ON VECTOR CARDS — border-t-2 orange ── */
+.vector-card {
+  background:var(--glass); border:1px solid var(--glass-border);
+  border-top:2px solid rgba(251,146,60,0.5);
+  border-radius:16px; padding:22px 22px 20px;
+  backdrop-filter:blur(20px); position:relative; overflow:hidden;
+  transition:border-color 0.25s, box-shadow 0.25s;
+  box-shadow:0 -6px 20px -8px rgba(251,146,60,0.15);
+}
+.vector-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--orange),transparent);
+  opacity:0.4; transition:opacity 0.3s;
+}
+.vector-card:focus-within {
+  border-top-color:var(--orange);
+  border-color:rgba(251,146,60,0.3);
+  box-shadow:0 -6px 20px -8px rgba(251,146,60,0.3), 0 8px 32px rgba(251,146,60,0.05);
+}
+.vector-card:focus-within::before { opacity:0.7; }
+
+/* Vector 04 constraint — keeps distinct orange-red tint */
+.vector-card.constraint { border-top-color:rgba(251,146,60,0.8); }
+.vector-card.constraint .vector-num { color:var(--orange); background:rgba(251,146,60,0.08); border-color:rgba(251,146,60,0.22); }
+.vector-card.constraint .v-textarea:focus { border-color:rgba(251,146,60,0.4); box-shadow:0 0 0 3px rgba(251,146,60,0.06); }
+
+.vector-badge { display:flex; align-items:center; gap:8px; margin-bottom:11px; }
+.vector-num {
+  font-family:'Space Mono',monospace; font-size:0.56rem; letter-spacing:0.18em;
+  color:var(--orange); background:rgba(251,146,60,0.08); border:1px solid rgba(251,146,60,0.22);
+  border-radius:4px; padding:2px 7px; text-transform:uppercase; white-space:nowrap;
+}
+.vector-title {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:0.8rem;
+  letter-spacing:0.13em; text-transform:uppercase; color:var(--text);
+}
+.vector-question { font-size:0.8rem; color:var(--text-muted); font-weight:300; line-height:1.55; margin-bottom:12px; }
+.vector-question strong { color:var(--orange); font-weight:600; }
+
+.v-textarea {
+  width:100%; background:rgba(0,0,0,0.28); border:1px solid var(--glass-border);
+  border-radius:9px; color:var(--text); font-family:'Outfit',sans-serif;
+  font-size:0.88rem; font-weight:300; line-height:1.65; padding:11px 13px;
+  outline:none; transition:border-color 0.2s,box-shadow 0.2s;
+  letter-spacing:0.02em; resize:vertical; min-height:88px;
+}
+.v-textarea::placeholder { color:rgba(148,163,184,0.38); font-style:italic; }
+.v-textarea:focus { border-color:rgba(251,146,60,0.4); box-shadow:0 0 0 3px rgba(251,146,60,0.06); }
+
+/* Essence section — also powered-on orange */
+.essence-section {
+  background:var(--glass); border:1px solid var(--glass-border);
+  border-top:2px solid rgba(251,146,60,0.4);
+  border-radius:16px; padding:22px 22px 20px;
+  backdrop-filter:blur(20px); position:relative; overflow:hidden;
+  box-shadow:0 -6px 20px -8px rgba(251,146,60,0.1);
+}
+.essence-section::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--orange),transparent); opacity:0.35;
+}
+.essence-header { display:flex; align-items:center; gap:8px; margin-bottom:15px; }
+.essence-badge {
+  font-family:'Space Mono',monospace; font-size:0.56rem; letter-spacing:0.18em;
+  color:var(--orange); background:rgba(251,146,60,0.08); border:1px solid rgba(251,146,60,0.2);
+  border-radius:4px; padding:2px 7px; text-transform:uppercase; white-space:nowrap;
+}
+.essence-title {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:0.8rem;
+  letter-spacing:0.13em; text-transform:uppercase; color:var(--text);
+}
+.essence-hint { font-size:0.75rem; color:rgba(148,163,184,0.5); font-weight:300; font-style:italic; margin-left:auto; }
+
+.chips-grid { display:flex; flex-wrap:wrap; gap:9px; }
+.chip {
+  padding:7px 16px; border-radius:100px; border:1px solid var(--glass-border);
+  background:rgba(255,255,255,0.025); color:var(--text-muted);
+  font-family:'Rajdhani',sans-serif; font-weight:600; font-size:0.82rem;
+  letter-spacing:0.08em; cursor:pointer; transition:all 0.2s;
+  user-select:none; text-transform:uppercase;
+}
+.chip:hover { border-color:rgba(251,146,60,0.4); color:var(--text); background:rgba(251,146,60,0.07); }
+.chip.active { border-color:var(--orange); color:var(--orange); background:rgba(251,146,60,0.1); box-shadow:0 0 14px rgba(251,146,60,0.18); }
+
+/* Notices */
+.no-key-notice {
+  background:rgba(251,146,60,0.07); border:1px solid rgba(251,146,60,0.2);
+  border-radius:10px; padding:12px 16px; font-size:0.82rem;
+  color:rgba(251,146,60,0.8); line-height:1.6; cursor:pointer;
+  transition:all 0.2s; display:none;
+}
+.no-key-notice.visible { display:block; }
+.no-key-notice:hover { background:rgba(251,146,60,0.12); }
+
+.error-banner {
+  background:rgba(239,68,68,0.09); border:1px solid rgba(239,68,68,0.28);
+  border-radius:10px; padding:13px 16px; color:#FCA5A5;
+  font-size:0.84rem; line-height:1.6; display:none;
+}
+.error-banner.visible { display:block; }
+
+#status-area {
+  text-align:center; font-family:'Space Mono',monospace; font-size:0.68rem;
+  letter-spacing:0.12em; color:var(--text-muted);
+  display:none; align-items:center; justify-content:center; gap:10px; min-height:26px;
+}
+#status-area.visible { display:flex; }
+.spinner {
+  width:14px; height:14px; border:2px solid rgba(251,146,60,0.2);
+  border-top-color:var(--orange); border-radius:50%;
+  animation:spin 0.8s linear infinite; flex-shrink:0;
+}
+
+/* Generate button — orange gradient when default, shifts per model */
+.btn-generate {
+  width:100%; padding:18px; border:none; border-radius:12px;
+  background:linear-gradient(135deg,var(--orange),#EA580C); color:#fff;
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem;
+  letter-spacing:0.18em; text-transform:uppercase; cursor:pointer;
+  position:relative; overflow:hidden; transition:all 0.3s;
+  box-shadow:0 4px 30px rgba(251,146,60,0.25);
+}
+.btn-generate::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);
+  opacity:0; transition:opacity 0.2s;
+}
+.btn-generate:hover { transform:translateY(-1px); box-shadow:0 8px 40px rgba(251,146,60,0.4); }
+.btn-generate:hover::before { opacity:1; }
+.btn-generate:active { transform:translateY(0); }
+.btn-generate:disabled { opacity:0.45; cursor:not-allowed; transform:none; box-shadow:none; }
+.btn-inner { display:flex; align-items:center; justify-content:center; gap:10px; }
+
+/* Per-model button gradient overrides */
+.btn-generate.model-anthropic { background:linear-gradient(135deg,var(--orange),#EA580C); box-shadow:0 4px 30px rgba(251,146,60,0.25); }
+.btn-generate.model-anthropic:hover { box-shadow:0 8px 40px rgba(251,146,60,0.4); }
+.btn-generate.model-openai { background:linear-gradient(135deg,#10B981,#059669); box-shadow:0 4px 30px rgba(16,185,129,0.25); }
+.btn-generate.model-openai:hover { box-shadow:0 8px 40px rgba(16,185,129,0.4); }
+.btn-generate.model-gemini { background:linear-gradient(135deg,var(--cyan),var(--blue)); box-shadow:0 4px 30px rgba(34,211,238,0.2); }
+.btn-generate.model-gemini:hover { box-shadow:0 8px 40px rgba(34,211,238,0.35); }
+.btn-generate.model-deepseek { background:linear-gradient(135deg,#818CF8,#6366F1); box-shadow:0 4px 30px rgba(129,140,248,0.25); }
+.btn-generate.model-deepseek:hover { box-shadow:0 8px 40px rgba(129,140,248,0.4); }
+
+/* ═══════════════════════════════════════════
+   RESULTS
+═══════════════════════════════════════════ */
+#results-area {
+  max-width:920px; margin:0 auto; padding:0 2rem 100px;
+  display:none; flex-direction:column; gap:18px;
+}
+#results-area.visible { display:flex; }
+
+.results-header {
+  display:flex; align-items:center; gap:12px; margin-bottom:4px; flex-wrap:wrap;
+}
+.results-title {
+  font-family:'Space Mono',monospace; font-size:0.6rem;
+  letter-spacing:0.25em; color:var(--orange); text-transform:uppercase; white-space:nowrap;
+}
+.results-line { flex:1; height:1px; background:linear-gradient(90deg,var(--orange),transparent); opacity:0.28; min-width:20px; }
+
+.btn-pdf {
+  display:flex; align-items:center; gap:7px;
+  padding:8px 18px; border-radius:8px; cursor:pointer;
+  border:1px solid rgba(251,146,60,0.3); background:rgba(251,146,60,0.07);
+  color:var(--orange); font-family:'Rajdhani',sans-serif;
+  font-weight:700; font-size:0.78rem; letter-spacing:0.14em;
+  text-transform:uppercase; transition:all 0.2s; white-space:nowrap;
+}
+.btn-pdf:hover { background:rgba(251,146,60,0.14); box-shadow:0 0 16px rgba(251,146,60,0.2); }
+
+/* Identity cards — powered-on orange border-t-2 */
+.identity-card {
+  background:rgba(255,255,255,0.032); border:1px solid var(--glass-border);
+  border-top:2px solid rgba(251,146,60,0.5);
+  border-radius:20px; padding:34px 38px; backdrop-filter:blur(24px);
+  position:relative; overflow:hidden;
+  transition:transform 0.3s,box-shadow 0.3s;
+  opacity:0; animation:cardReveal 0.6s forwards;
+  box-shadow:0 -8px 24px -10px rgba(251,146,60,0.15);
+}
+.identity-card:nth-child(3){animation-delay:0.08s}
+.identity-card:nth-child(4){animation-delay:0.16s}
+.identity-card:nth-child(5){animation-delay:0.24s}
+.identity-card:nth-child(6){animation-delay:0.32s}
+.identity-card:nth-child(7){animation-delay:0.40s}
+.identity-card:hover { transform:translateY(-3px); box-shadow:0 -8px 24px -10px rgba(251,146,60,0.25), 0 20px 60px rgba(0,0,0,0.3); }
+
+.card-glow {
+  position:absolute; top:-60px; right:-60px; width:200px; height:200px;
+  border-radius:50%; pointer-events:none; opacity:0.32; filter:blur(60px);
+}
+.card-num { font-family:'Space Mono',monospace; font-size:0.56rem; color:rgba(251,146,60,0.5); letter-spacing:0.2em; margin-bottom:12px; }
+.card-name {
+  font-family:'Outfit',sans-serif; font-weight:800; font-size:clamp(2rem,5vw,3.2rem);
+  line-height:1; letter-spacing:-0.02em; margin-bottom:15px;
+  background:linear-gradient(135deg,var(--text) 0%,rgba(248,250,252,0.68) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.card-divider { height:1px; background:linear-gradient(90deg,rgba(251,146,60,0.2),transparent); margin-bottom:16px; }
+.card-soul-label { font-family:'Space Mono',monospace; font-size:0.56rem; letter-spacing:0.2em; color:var(--orange); text-transform:uppercase; margin-bottom:7px; opacity:0.7; }
+.card-soul { font-size:0.92rem; font-weight:300; color:var(--text-muted); line-height:1.7; margin-bottom:20px; }
+.card-palette-label { font-family:'Space Mono',monospace; font-size:0.56rem; letter-spacing:0.2em; color:var(--blue); text-transform:uppercase; margin-bottom:10px; opacity:0.65; }
+.palette-row { display:flex; align-items:flex-start; gap:11px; flex-wrap:wrap; }
+.palette-swatch { display:flex; flex-direction:column; align-items:center; gap:5px; }
+.swatch-color { width:40px; height:40px; border-radius:9px; border:1px solid rgba(255,255,255,0.1); box-shadow:0 4px 12px rgba(0,0,0,0.4); }
+.swatch-hex { font-family:'Space Mono',monospace; font-size:0.5rem; color:var(--text-muted); }
+.palette-textures { font-size:0.78rem; color:rgba(148,163,184,0.65); font-style:italic; font-weight:300; align-self:center; padding-left:4px; line-height:1.55; }
+
+/* ═══════════════════════════════════════════
+   HISTORY PAGE
+═══════════════════════════════════════════ */
+.history-page { max-width:920px; margin:0 auto; padding:40px 2rem 80px; }
+.hist-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; flex-wrap:wrap; gap:12px; }
+.hist-title-group { display:flex; flex-direction:column; gap:4px; }
+.hist-title {
+  font-family:'Outfit',sans-serif; font-weight:800; font-size:1.6rem;
+  letter-spacing:-0.02em;
+  background:linear-gradient(135deg,var(--text),rgba(248,250,252,0.6));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.hist-subtitle { font-family:'Space Mono',monospace; font-size:0.62rem; letter-spacing:0.2em; color:var(--text-muted); text-transform:uppercase; }
+.btn-clear-hist {
+  display:flex; align-items:center; gap:7px;
+  padding:8px 16px; border-radius:8px; cursor:pointer;
+  border:1px solid rgba(239,68,68,0.25); background:rgba(239,68,68,0.07);
+  color:#FCA5A5; font-family:'Rajdhani',sans-serif;
+  font-weight:600; font-size:0.78rem; letter-spacing:0.1em;
+  text-transform:uppercase; transition:all 0.2s;
+}
+.btn-clear-hist:hover { background:rgba(239,68,68,0.14); border-color:rgba(239,68,68,0.4); }
+
+.hist-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 24px; text-align:center; gap:16px; }
+.hist-empty-icon { width:56px; height:56px; border-radius:16px; background:var(--glass); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:center; opacity:0.6; }
+.hist-empty-title { font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.1rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); }
+.hist-empty-sub { font-size:0.85rem; color:rgba(148,163,184,0.5); font-weight:300; max-width:320px; line-height:1.6; }
+
+.hist-sessions { display:flex; flex-direction:column; gap:16px; }
+.hist-session {
+  background:var(--glass); border:1px solid var(--glass-border);
+  border-top:2px solid rgba(251,146,60,0.3);
+  border-radius:16px; overflow:hidden; transition:border-color 0.2s;
+  animation:slideIn 0.4s forwards;
+}
+.hist-session:hover { border-color:rgba(251,146,60,0.25); }
+.hist-session-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 22px; cursor:pointer; gap:12px;
+  background:rgba(255,255,255,0.02); transition:background 0.2s;
+}
+.hist-session-header:hover { background:rgba(255,255,255,0.04); }
+.hist-session-meta { display:flex; flex-direction:column; gap:4px; flex:1; min-width:0; }
+.hist-session-date { font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; color:var(--orange); text-transform:uppercase; }
+.hist-session-entity { font-size:0.88rem; color:var(--text); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.hist-session-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+.hist-tag {
+  font-family:'Rajdhani',sans-serif; font-size:0.68rem; font-weight:600;
+  letter-spacing:0.08em; text-transform:uppercase;
+  background:rgba(251,146,60,0.1); border:1px solid rgba(251,146,60,0.2);
+  color:rgba(251,146,60,0.7); border-radius:100px; padding:1px 9px;
+}
+/* Model tag shown in history */
+.hist-model-tag {
+  font-family:'Space Mono',monospace; font-size:0.58rem;
+  letter-spacing:0.1em; text-transform:uppercase;
+  border-radius:100px; padding:1px 9px;
+}
+.hist-session-actions { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.btn-hist-pdf {
+  display:flex; align-items:center; gap:5px;
+  padding:5px 12px; border-radius:6px;
+  border:1px solid rgba(251,146,60,0.25); background:rgba(251,146,60,0.06);
+  color:var(--orange); font-family:'Rajdhani',sans-serif;
+  font-weight:600; font-size:0.72rem; letter-spacing:0.12em;
+  text-transform:uppercase; cursor:pointer; transition:all 0.2s; white-space:nowrap;
+}
+.btn-hist-pdf:hover { background:rgba(251,146,60,0.12); }
+.btn-hist-delete {
+  width:30px; height:30px; border-radius:6px;
+  border:1px solid rgba(239,68,68,0.2); background:rgba(239,68,68,0.06);
+  color:rgba(239,68,68,0.6); cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.btn-hist-delete:hover { background:rgba(239,68,68,0.14); color:#FCA5A5; }
+.hist-chevron { color:var(--text-muted); transition:transform 0.3s; flex-shrink:0; }
+.hist-session.open .hist-chevron { transform:rotate(180deg); }
+.hist-session-body { display:none; padding:0 22px 20px; gap:10px; flex-direction:column; }
+.hist-session.open .hist-session-body { display:flex; }
+.hist-name-row {
+  display:flex; align-items:flex-start; gap:14px;
+  padding:14px 16px; border-radius:10px;
+  background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.05);
+  transition:border-color 0.2s;
+}
+.hist-name-row:hover { border-color:rgba(251,146,60,0.15); }
+.hist-name-swatches { display:flex; gap:5px; flex-shrink:0; padding-top:3px; }
+.hist-swatch { width:16px; height:16px; border-radius:4px; border:1px solid rgba(255,255,255,0.1); }
+.hist-name-info { flex:1; min-width:0; }
+.hist-name-text { font-family:'Outfit',sans-serif; font-weight:700; font-size:1.1rem; letter-spacing:-0.01em; margin-bottom:4px; }
+.hist-soul-text { font-size:0.78rem; color:var(--text-muted); font-weight:300; line-height:1.6; }
+
+/* ═══════════════════════════════════════════
+   SETTINGS MODAL — MULTI-MODEL ROUTER
+═══════════════════════════════════════════ */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.72);
+  backdrop-filter:blur(12px); z-index:1000;
+  display:none; align-items:center; justify-content:center; padding:2rem;
+}
+.modal-overlay.visible { display:flex; }
+
+.modal {
+  background:rgba(13,18,30,0.97); border:1px solid var(--glass-border);
+  border-top:2px solid rgba(251,146,60,0.5);
+  border-radius:20px; padding:36px; max-width:520px; width:100%;
+  position:relative; backdrop-filter:blur(40px);
+  box-shadow:0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(251,146,60,0.08);
+  max-height:90vh; overflow-y:auto;
+}
+.modal-title {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.3rem;
+  letter-spacing:0.1em; text-transform:uppercase; margin-bottom:4px;
+  background:linear-gradient(135deg,var(--orange),#FCD34D);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.modal-subtitle {
+  font-family:'Space Mono',monospace; font-size:0.6rem; letter-spacing:0.18em;
+  color:var(--text-muted); text-transform:uppercase; margin-bottom:28px;
+}
+
+/* Provider cards inside modal */
+.provider-list { display:flex; flex-direction:column; gap:12px; margin-bottom:28px; }
+
+.provider-card {
+  border:1px solid var(--glass-border); border-radius:14px;
+  overflow:hidden; transition:border-color 0.2s;
+}
+.provider-card:focus-within { border-color:rgba(255,255,255,0.15); }
+
+.provider-header {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px;
+  background:rgba(255,255,255,0.02);
+  border-bottom:1px solid transparent;
+  transition:border-color 0.2s;
+}
+.provider-card:focus-within .provider-header { border-bottom-color:var(--glass-border); }
+
+.provider-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.provider-info { flex:1; }
+.provider-name {
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:0.9rem;
+  letter-spacing:0.1em; text-transform:uppercase; line-height:1.2;
+}
+.provider-role {
+  font-family:'Space Mono',monospace; font-size:0.58rem;
+  letter-spacing:0.1em; color:var(--text-muted); text-transform:uppercase;
+  margin-top:2px;
+}
+.provider-model-tag {
+  font-family:'Space Mono',monospace; font-size:0.58rem;
+  letter-spacing:0.08em; border-radius:6px; padding:3px 9px;
+  border:1px solid; white-space:nowrap;
+}
+
+/* Info tooltip trigger */
+.provider-info-btn {
+  width:22px; height:22px; border-radius:50%;
+  background:rgba(255,255,255,0.05); border:1px solid var(--glass-border);
+  color:var(--text-muted); font-family:'Space Mono',monospace;
+  font-size:0.65rem; cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.provider-info-btn:hover { background:rgba(255,255,255,0.1); color:var(--text); }
+
+/* Info panel (shown/hidden per provider) */
+.provider-info-panel {
+  padding:12px 16px;
+  background:rgba(0,0,0,0.2);
+  border-bottom:1px solid var(--glass-border);
+  display:none;
+}
+.provider-info-panel.visible { display:block; }
+.info-step {
+  font-size:0.8rem; color:var(--text-muted); line-height:1.7; font-weight:300;
+}
+.info-step + .info-step { margin-top:4px; }
+.info-step a { color:var(--cyan); text-decoration:none; }
+.info-step a:hover { text-decoration:underline; }
+.info-step strong { color:var(--text); font-weight:500; }
+
+/* Key input row */
+.provider-key-row { padding:12px 16px; display:flex; align-items:center; gap:8px; }
+.provider-key-input {
+  flex:1; background:rgba(0,0,0,0.35); border:1px solid var(--glass-border);
+  border-radius:8px; color:var(--text); font-family:'Space Mono',monospace;
+  font-size:0.75rem; padding:9px 12px; outline:none; transition:border-color 0.2s;
+  letter-spacing:0.04em;
+}
+.provider-key-input:focus { border-color:rgba(255,255,255,0.2); }
+.provider-key-input::placeholder { color:rgba(148,163,184,0.35); font-style:italic; }
+
+.provider-save-btn {
+  padding:8px 14px; border:none; border-radius:8px;
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:0.75rem;
+  letter-spacing:0.1em; text-transform:uppercase; cursor:pointer;
+  transition:all 0.2s; white-space:nowrap; color:#fff;
+}
+.provider-saved-indicator {
+  font-family:'Space Mono',monospace; font-size:0.6rem;
+  letter-spacing:0.1em; text-transform:uppercase;
+  padding:0 4px; display:none; white-space:nowrap;
+}
+.provider-saved-indicator.visible { display:block; }
+
+/* Modal footer */
+.modal-actions { display:flex; gap:10px; margin-top:4px; }
+.btn-modal-close {
+  flex:1; padding:12px; border:1px solid var(--glass-border); border-radius:10px;
+  background:transparent; color:var(--text-muted);
+  font-family:'Rajdhani',sans-serif; font-weight:600; font-size:0.85rem;
+  letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:all 0.2s;
+}
+.btn-modal-close:hover { border-color:var(--text-muted); color:var(--text); }
+.modal-x {
+  position:absolute; top:16px; right:16px; width:28px; height:28px;
+  background:var(--glass); border:1px solid var(--glass-border); border-radius:6px;
+  color:var(--text-muted); font-size:14px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+}
+.modal-x:hover { color:var(--text); border-color:var(--text-muted); }
+
+/* ═══════════════════════════════════════════
+   PRINT / PDF
+═══════════════════════════════════════════ */
+@media print {
+  body > *:not(#print-payload) { display:none !important; }
+  body::before, body::after { display:none !important; }
+  #print-payload { display:block !important; font-family:'Outfit',sans-serif; color:#0B0F19; background:#fff; }
+  .pp-cover { padding:48px 56px 36px; border-bottom:3px solid #FB923C; margin-bottom:36px; }
+  .pp-logo-line { font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:#FB923C; font-family:monospace; margin-bottom:14px; }
+  .pp-title { font-size:38px; font-weight:900; letter-spacing:-0.03em; color:#0B0F19; line-height:1; margin-bottom:8px; }
+  .pp-entity { font-size:13px; color:#475569; font-weight:300; line-height:1.7; margin-top:12px; max-width:540px; }
+  .pp-meta { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:#94A3B8; font-family:monospace; margin-top:20px; }
+  .pp-card { padding:32px 56px; border-bottom:1px solid #E2E8F0; page-break-inside:avoid; }
+  .pp-card-num { font-family:monospace; font-size:9px; letter-spacing:0.22em; color:#FB923C; text-transform:uppercase; margin-bottom:8px; }
+  .pp-card-name { font-size:30px; font-weight:900; letter-spacing:-0.02em; color:#0F172A; margin-bottom:12px; }
+  .pp-rule { height:2px; background:#FB923C; width:40px; margin-bottom:14px; opacity:0.6; }
+  .pp-soul-label { font-family:monospace; font-size:8px; letter-spacing:0.2em; color:#FB923C; text-transform:uppercase; margin-bottom:5px; }
+  .pp-soul { font-size:12px; color:#475569; font-weight:300; line-height:1.8; margin-bottom:18px; }
+  .pp-palette-label { font-family:monospace; font-size:8px; letter-spacing:0.2em; color:#2563EB; text-transform:uppercase; margin-bottom:10px; }
+  .pp-swatches { display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap; }
+  .pp-swatch-wrap { display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .pp-swatch { width:36px; height:36px; border-radius:8px; border:1px solid #E2E8F0; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+  .pp-swatch-hex { font-family:monospace; font-size:8px; color:#94A3B8; }
+  .pp-textures { font-size:11px; color:#64748B; font-style:italic; align-self:center; padding-left:8px; }
+  .pp-footer { padding:24px 56px; font-family:monospace; font-size:9px; letter-spacing:0.15em; color:#CBD5E1; text-transform:uppercase; text-align:center; }
+}
+#print-payload { display:none; }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer {
+  position:relative; z-index:1; text-align:center; padding:36px 2rem;
+  border-top:1px solid var(--glass-border); font-family:'Space Mono',monospace;
+  font-size:0.58rem; letter-spacing:0.14em; color:rgba(148,163,184,0.28); text-transform:uppercase;
+}
+footer span {
+  background:linear-gradient(135deg,var(--orange),#FCD34D);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:rgba(251,146,60,0.18); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:rgba(251,146,60,0.38); }
+
+@media(max-width:600px) {
+  .command-panel, #results-area, .history-page { padding-left:1rem; padding-right:1rem; }
+  .identity-card { padding:24px 20px; }
+  .hero { padding:56px 1.5rem 36px; }
+  .model-engine-label { display:none; }
+}
+</style>
+</head>
+<body>
+
+<div id="print-payload"></div>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav>
+  <a class="nav-logo" href="#">
+    <svg class="logo-mark" viewBox="0 0 36 36" fill="none">
+      <defs>
+        <linearGradient id="lg1" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#FB923C"/>
+          <stop offset="100%" stop-color="#EA580C"/>
+        </linearGradient>
+      </defs>
+      <path d="M13 6 C10 6 9 7 9 9.5 C9 11 9.5 12 9.5 13.5 C9.5 15.5 8 16.5 6.5 18 C8 19.5 9.5 20.5 9.5 22.5 C9.5 24 9 25 9 26.5 C9 29 10 30 13 30" stroke="url(#lg1)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path d="M16 8 L16 28 M16 8 C22 8 28 11 28 18 C28 25 22 28 16 28" stroke="url(#lg1)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path d="M18 15 L24 18 L18 21 Z" fill="url(#lg1)" opacity="0.9"/>
+    </svg>
+    <span class="nav-brand">DiegosDev<span style="opacity:0.5;font-weight:300">Studio</span></span>
+  </a>
+
+  <div class="nav-right">
+    <!-- MODEL ENGINE DROPDOWN -->
+    <div class="model-engine-wrap" id="model-engine-wrap">
+      <button class="btn-model-engine" onclick="toggleModelMenu()" id="btn-model-engine">
+        <div class="model-engine-dot"></div>
+        <span class="model-engine-label" id="model-engine-label">Claude Sonnet</span>
+        <svg class="model-engine-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="model-engine-menu" id="model-engine-menu">
+        <div class="model-menu-title">// Model Engine</div>
+        <div class="model-option active" data-model="anthropic" onclick="selectModel('anthropic')">
+          <div class="model-option-dot" style="background:#FB923C"></div>
+          <div class="model-option-info">
+            <div class="model-option-name">Claude Sonnet</div>
+            <div class="model-option-role">Creative Historian</div>
+          </div>
+          <svg class="model-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="model-option" data-model="openai" onclick="selectModel('openai')">
+          <div class="model-option-dot" style="background:#10B981"></div>
+          <div class="model-option-info">
+            <div class="model-option-name">GPT-4o</div>
+            <div class="model-option-role">Logic Expert</div>
+          </div>
+          <svg class="model-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="model-option" data-model="gemini" onclick="selectModel('gemini')">
+          <div class="model-option-dot" style="background:#22D3EE"></div>
+          <div class="model-option-info">
+            <div class="model-option-name">Gemini 1.5 Pro</div>
+            <div class="model-option-role">Visual Architect</div>
+          </div>
+          <svg class="model-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="model-option" data-model="deepseek" onclick="selectModel('deepseek')">
+          <div class="model-option-dot" style="background:#818CF8"></div>
+          <div class="model-option-info">
+            <div class="model-option-name">DeepSeek / Grok</div>
+            <div class="model-option-role">Pro Manipulator</div>
+          </div>
+          <svg class="model-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS / KEYS -->
+    <button class="btn-settings-nav" onclick="openSettings()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      API Keys
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main>
+  <div class="tab-bar">
+    <div class="tab active" id="tab-forge" onclick="switchTab('forge')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Forge
+    </div>
+    <div class="tab" id="tab-history" onclick="switchTab('history')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      History
+      <span class="tab-badge" id="hist-tab-badge">0</span>
+    </div>
+  </div>
+
+  <!-- PAGE: FORGE -->
+  <div class="page active" id="page-forge">
+    <section class="hero">
+      <div class="hero-eyebrow" id="hero-eyebrow">// Creative Historian — Claude 3.5 Sonnet Active</div>
+      <h1 class="hero-title">The<br><span>Nominarium</span></h1>
+      <p class="hero-sub">Calibrate four precision vectors. Define every dimension of your brand. Receive identities forged at the intersection of language, strategy, and luxury.</p>
+    </section>
+
+    <div class="command-panel">
+      <div class="no-key-notice" id="no-key-notice" onclick="openSettings()">
+        ⚡ No API key for the active model — click "API Keys" in the top-right to configure.
+      </div>
+
+      <div class="section-heading">
+        <span class="section-heading-label">// Parameter Calibration</span>
+        <div class="section-heading-line"></div>
+      </div>
+
+      <div class="vectors-grid">
+        <div class="vector-card">
+          <div class="vector-badge"><span class="vector-num">Vector 01</span><span class="vector-title">Define the Entity</span></div>
+          <div class="vector-question">What is the specific purpose of this name?</div>
+          <textarea class="v-textarea" id="v-entity" placeholder="e.g. A luxury skincare line for high-income women who value minimal ingredients, ethical sourcing, and clinical-grade results without the clinical aesthetic..."></textarea>
+        </div>
+        <div class="vector-card">
+          <div class="vector-badge"><span class="vector-num">Vector 02</span><span class="vector-title">Establish Identity</span></div>
+          <div class="vector-question">Target audience or gender profile?</div>
+          <textarea class="v-textarea" id="v-identity" placeholder="e.g. Gender-neutral, ages 28–45, urban professionals with cultural curiosity, high disposable income, and a preference for understated luxury..."></textarea>
+        </div>
+        <div class="vector-card">
+          <div class="vector-badge"><span class="vector-num">Vector 03</span><span class="vector-title">Conceptual Vectors</span></div>
+          <div class="vector-question">Core themes, genres, or emotional impacts?</div>
+          <textarea class="v-textarea" id="v-concept" placeholder="e.g. Ancient ritual meets modern science. Quiet power. The feeling of cold marble and warm candlelight. Transformation. Slow luxury..."></textarea>
+        </div>
+        <div class="vector-card constraint">
+          <div class="vector-badge"><span class="vector-num">Vector 04</span><span class="vector-title">Constraint Parameters</span></div>
+          <div class="vector-question">Any letters or sounds to <strong>AVOID</strong>?</div>
+          <textarea class="v-textarea" id="v-constraints" placeholder="e.g. Avoid harsh K, X, or Z sounds. No names starting with 'S'. Nothing that sounds clinical or pharmaceutical..."></textarea>
+        </div>
+      </div>
+
+      <div class="section-heading" style="margin-top:4px">
+        <span class="section-heading-label">// Essence Selection</span>
+        <div class="section-heading-line"></div>
+      </div>
+
+      <div class="essence-section">
+        <div class="essence-header">
+          <span class="essence-badge">Signature</span>
+          <span class="essence-title">Luxury Essence</span>
+          <span class="essence-hint">Select any that apply</span>
+        </div>
+        <div class="chips-grid" id="chips-container">
+          <div class="chip" data-essence="Heritage">Heritage</div>
+          <div class="chip" data-essence="Avant-Garde">Avant-Garde</div>
+          <div class="chip" data-essence="Minimalist">Minimalist</div>
+          <div class="chip" data-essence="Sustainable">Sustainable</div>
+          <div class="chip" data-essence="Disruptive">Disruptive</div>
+          <div class="chip" data-essence="Bespoke">Bespoke</div>
+        </div>
+      </div>
+
+      <div class="error-banner" id="error-banner"></div>
+      <div id="status-area"><div class="spinner"></div><span id="status-text">Forging identities...</span></div>
+
+      <button class="btn-generate model-anthropic" id="gen-btn" onclick="generate()">
+        <span class="btn-inner">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span id="gen-btn-label">Forge with Claude</span>
+        </span>
+      </button>
+    </div>
+
+    <div id="results-area"></div>
+  </div>
+
+  <!-- PAGE: HISTORY -->
+  <div class="page" id="page-history">
+    <div class="history-page">
+      <div class="hist-header">
+        <div class="hist-title-group">
+          <div class="hist-title">Identity Archive</div>
+          <div class="hist-subtitle">// Saved Generations — Browser Storage</div>
+        </div>
+        <button class="btn-clear-hist" onclick="clearAllHistory()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          Clear All
+        </button>
+      </div>
+      <div id="hist-sessions-container"></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Built by <span>DiegosDev Studio</span> — The Nominarium v4 — Multi-Model Identity Engine
+</footer>
+
+<!-- ═══════════════ SETTINGS MODAL ═══════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <button class="modal-x" onclick="closeSettings()">✕</button>
+    <div class="modal-title">API Key Router</div>
+    <div class="modal-subtitle">// Configure your model engines — keys stored in browser only</div>
+
+    <div class="provider-list">
+
+      <!-- ANTHROPIC -->
+      <div class="provider-card" id="pcard-anthropic">
+        <div class="provider-header">
+          <div class="provider-dot" style="background:#FB923C"></div>
+          <div class="provider-info">
+            <div class="provider-name" style="color:#FB923C">Anthropic — Claude</div>
+            <div class="provider-role">The Creative Historian · Default for Nominarium</div>
+          </div>
+          <div class="provider-model-tag" style="color:#FB923C;background:rgba(251,146,60,0.08);border-color:rgba(251,146,60,0.22)">claude-3-5-sonnet</div>
+          <button class="provider-info-btn" onclick="toggleInfo('anthropic')" title="Setup guide">?</button>
+        </div>
+        <div class="provider-info-panel" id="info-anthropic">
+          <div class="info-step">⓵ &nbsp;<strong>Step 1:</strong> Get your key at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com/settings/keys →</a></div>
+          <div class="info-step">⓶ &nbsp;<strong>Step 2:</strong> Paste below. Saved only to your local browser storage (localStorage). Never transmitted.</div>
+        </div>
+        <div class="provider-key-row">
+          <input class="provider-key-input" id="key-anthropic" type="password" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+          <button class="provider-save-btn" style="background:linear-gradient(135deg,#FB923C,#EA580C)" onclick="saveProviderKey('anthropic')">Save</button>
+          <span class="provider-saved-indicator" id="saved-anthropic" style="color:#FB923C">✓ Saved</span>
+        </div>
+      </div>
+
+      <!-- OPENAI -->
+      <div class="provider-card" id="pcard-openai">
+        <div class="provider-header">
+          <div class="provider-dot" style="background:#10B981"></div>
+          <div class="provider-info">
+            <div class="provider-name" style="color:#10B981">OpenAI — GPT-4o</div>
+            <div class="provider-role">The Logic Expert · Systems &amp; Precision</div>
+          </div>
+          <div class="provider-model-tag" style="color:#10B981;background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.22)">gpt-4o</div>
+          <button class="provider-info-btn" onclick="toggleInfo('openai')" title="Setup guide">?</button>
+        </div>
+        <div class="provider-info-panel" id="info-openai">
+          <div class="info-step">⓵ &nbsp;<strong>Step 1:</strong> Get your key at <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com/api-keys →</a></div>
+          <div class="info-step">⓶ &nbsp;<strong>Step 2:</strong> Paste below. Saved only to your local browser storage (localStorage). Never transmitted.</div>
+        </div>
+        <div class="provider-key-row">
+          <input class="provider-key-input" id="key-openai" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false">
+          <button class="provider-save-btn" style="background:linear-gradient(135deg,#10B981,#059669)" onclick="saveProviderKey('openai')">Save</button>
+          <span class="provider-saved-indicator" id="saved-openai" style="color:#10B981">✓ Saved</span>
+        </div>
+      </div>
+
+      <!-- GOOGLE GEMINI -->
+      <div class="provider-card" id="pcard-gemini">
+        <div class="provider-header">
+          <div class="provider-dot" style="background:#22D3EE"></div>
+          <div class="provider-info">
+            <div class="provider-name" style="color:#22D3EE">Google — Gemini</div>
+            <div class="provider-role">The Visual Architect · Image &amp; Prompt Engineering</div>
+          </div>
+          <div class="provider-model-tag" style="color:#22D3EE;background:rgba(34,211,238,0.08);border-color:rgba(34,211,238,0.22)">gemini-1.5-pro</div>
+          <button class="provider-info-btn" onclick="toggleInfo('gemini')" title="Setup guide">?</button>
+        </div>
+        <div class="provider-info-panel" id="info-gemini">
+          <div class="info-step">⓵ &nbsp;<strong>Step 1:</strong> Get your key at <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com/app/apikey →</a></div>
+          <div class="info-step">⓶ &nbsp;<strong>Step 2:</strong> Paste below. Saved only to your local browser storage (localStorage). Never transmitted.</div>
+        </div>
+        <div class="provider-key-row">
+          <input class="provider-key-input" id="key-gemini" type="password" placeholder="AIza..." autocomplete="off" spellcheck="false">
+          <button class="provider-save-btn" style="background:linear-gradient(135deg,#22D3EE,#2563EB)" onclick="saveProviderKey('gemini')">Save</button>
+          <span class="provider-saved-indicator" id="saved-gemini" style="color:#22D3EE">✓ Saved</span>
+        </div>
+      </div>
+
+      <!-- DEEPSEEK / GROK -->
+      <div class="provider-card" id="pcard-deepseek">
+        <div class="provider-header">
+          <div class="provider-dot" style="background:#818CF8"></div>
+          <div class="provider-info">
+            <div class="provider-name" style="color:#818CF8">DeepSeek / Grok</div>
+            <div class="provider-role">The Pro Manipulator · Experimental &amp; Unfiltered</div>
+          </div>
+          <div class="provider-model-tag" style="color:#818CF8;background:rgba(129,140,248,0.08);border-color:rgba(129,140,248,0.22)">deepseek-chat</div>
+          <button class="provider-info-btn" onclick="toggleInfo('deepseek')" title="Setup guide">?</button>
+        </div>
+        <div class="provider-info-panel" id="info-deepseek">
+          <div class="info-step">⓵ &nbsp;<strong>Step 1:</strong> Get your DeepSeek key at <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener">platform.deepseek.com/api_keys →</a></div>
+          <div class="info-step">⓶ &nbsp;<strong>Step 2:</strong> Paste below. Saved only to your local browser storage (localStorage). Never transmitted.</div>
+        </div>
+        <div class="provider-key-row">
+          <input class="provider-key-input" id="key-deepseek" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false">
+          <button class="provider-save-btn" style="background:linear-gradient(135deg,#818CF8,#6366F1)" onclick="saveProviderKey('deepseek')">Save</button>
+          <span class="provider-saved-indicator" id="saved-deepseek" style="color:#818CF8">✓ Saved</span>
+        </div>
+      </div>
+
+    </div><!-- /provider-list -->
+
+    <div class="modal-actions">
+      <button class="btn-modal-close" onclick="closeSettings()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SCRIPT ═══════════════ -->
+<script>
+// ── CONSTANTS ────────────────────────────────────
+const HISTORY_KEY  = 'nominarium_history';
+const MAX_SESSIONS = 30;
+const GLOW_COLORS  = ['#FB923C','#2563EB','#818CF8','#34D399','#F472B6'];
+
+const MODELS = {
+  anthropic: {
+    label:    'Claude Sonnet',
+    btnLabel: 'Forge with Claude',
+    eyebrow:  '// Creative Historian — Claude 3.5 Sonnet Active',
+    storageKey: 'nominarium_key_anthropic',
+    btnClass: 'model-anthropic',
+    color:    '#FB923C'
+  },
+  openai: {
+    label:    'GPT-4o',
+    btnLabel: 'Forge with GPT-4o',
+    eyebrow:  '// Logic Expert — GPT-4o Active',
+    storageKey: 'nominarium_key_openai',
+    btnClass: 'model-openai',
+    color:    '#10B981'
+  },
+  gemini: {
+    label:    'Gemini 1.5 Pro',
+    btnLabel: 'Forge with Gemini',
+    eyebrow:  '// Visual Architect — Gemini 1.5 Pro Active',
+    storageKey: 'nominarium_key_gemini',
+    btnClass: 'model-gemini',
+    color:    '#22D3EE'
+  },
+  deepseek: {
+    label:    'DeepSeek',
+    btnLabel: 'Forge with DeepSeek',
+    eyebrow:  '// Pro Manipulator — DeepSeek Active',
+    storageKey: 'nominarium_key_deepseek',
+    btnClass: 'model-deepseek',
+    color:    '#818CF8'
+  }
+};
+
+// ── STATE ────────────────────────────────────────
+const ESSENCES = new Set();
+let isGenerating  = false;
+let currentModel  = 'anthropic'; // default
+let currentSession = null;
+
+// ── MODEL ENGINE ──────────────────────────────────
+function toggleModelMenu() {
+  document.getElementById('model-engine-wrap').classList.toggle('open');
+}
+// Close dropdown when clicking outside
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('model-engine-wrap');
+  if (!wrap.contains(e.target)) wrap.classList.remove('open');
+});
+
+function selectModel(modelKey) {
+  currentModel = modelKey;
+  const m = MODELS[modelKey];
+
+  // Update dropdown label
+  document.getElementById('model-engine-label').textContent = m.label;
+
+  // Update active state in menu
+  document.querySelectorAll('.model-option').forEach(o => {
+    o.classList.toggle('active', o.dataset.model === modelKey);
+  });
+
+  // Update forge button
+  const btn = document.getElementById('gen-btn');
+  btn.className = 'btn-generate ' + m.btnClass;
+  document.getElementById('gen-btn-label').textContent = m.btnLabel;
+
+  // Update hero eyebrow
+  document.getElementById('hero-eyebrow').textContent = m.eyebrow;
+
+  // Close menu
+  document.getElementById('model-engine-wrap').classList.remove('open');
+
+  // Re-check key notice
+  checkKey();
+}
+
+// ── TABS ─────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'history') renderHistoryPage();
+}
+
+// ── CHIPS ─────────────────────────────────────────
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const val = chip.dataset.essence;
+    if (ESSENCES.has(val)) { ESSENCES.delete(val); chip.classList.remove('active'); }
+    else { ESSENCES.add(val); chip.classList.add('active'); }
+  });
+});
+
+// ── SETTINGS MODAL ───────────────────────────────
+function openSettings() {
+  // Populate fields from localStorage
+  ['anthropic','openai','gemini','deepseek'].forEach(p => {
+    const key = localStorage.getItem(MODELS[p].storageKey) || '';
+    document.getElementById('key-' + p).value = key;
+    document.getElementById('saved-' + p).classList.toggle('visible', !!key);
+  });
+  document.getElementById('modal-overlay').classList.add('visible');
+}
+function closeSettings() { document.getElementById('modal-overlay').classList.remove('visible'); }
+function handleOverlayClick(e) { if (e.target === document.getElementById('modal-overlay')) closeSettings(); }
+
+function saveProviderKey(provider) {
+  const val = document.getElementById('key-' + provider).value.trim();
+  const storageKey = MODELS[provider].storageKey;
+  val ? localStorage.setItem(storageKey, val) : localStorage.removeItem(storageKey);
+  document.getElementById('saved-' + provider).classList.toggle('visible', !!val);
+  checkKey();
+}
+
+function toggleInfo(provider) {
+  const panel = document.getElementById('info-' + provider);
+  panel.classList.toggle('visible');
+}
+
+function checkKey() {
+  const key = localStorage.getItem(MODELS[currentModel].storageKey);
+  document.getElementById('no-key-notice').classList.toggle('visible', !key);
+}
+
+// ── STATUS ───────────────────────────────────────
+function showStatus(msg, spinner = true) {
+  const area = document.getElementById('status-area');
+  document.getElementById('status-text').textContent = msg;
+  area.querySelector('.spinner').style.display = spinner ? 'block' : 'none';
+  area.classList.add('visible');
+}
+function clearStatus() { document.getElementById('status-area').classList.remove('visible'); }
+function showError(msg) {
+  const el = document.getElementById('error-banner');
+  el.textContent = msg; el.classList.add('visible');
+}
+function clearError() {
+  const el = document.getElementById('error-banner');
+  el.classList.remove('visible'); el.textContent = '';
+}
+
+// ── API CALLS (per model) ─────────────────────────
+async function callAPI(prompt, retries = 3) {
+  const m   = MODELS[currentModel];
+  const key = localStorage.getItem(m.storageKey);
+  if (!key) throw new Error(`No API key for ${m.label}. Click "API Keys" to configure.`);
+
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    let res, raw;
+
+    if (currentModel === 'anthropic') {
+      res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-3-5-sonnet-20241022',
+          max_tokens: 2048,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      if (res.status === 429) {
+        if (attempt === retries) throw new Error('Rate limit (429). Please wait and retry.');
+        showStatus(`Rate limited — retrying in 2s (${attempt}/${retries})...`);
+        await new Promise(r => setTimeout(r, 2000)); continue;
+      }
+      if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(`Claude API: ${e?.error?.message || 'HTTP '+res.status}`); }
+      const d = await res.json();
+      raw = d?.content?.[0]?.text || '';
+
+    } else if (currentModel === 'openai') {
+      res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+        body: JSON.stringify({ model: 'gpt-4o', max_tokens: 2048, messages: [{ role: 'user', content: prompt }] })
+      });
+      if (res.status === 429) {
+        if (attempt === retries) throw new Error('Rate limit (429). Please wait and retry.');
+        showStatus(`Rate limited — retrying in 2s (${attempt}/${retries})...`);
+        await new Promise(r => setTimeout(r, 2000)); continue;
+      }
+      if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(`OpenAI API: ${e?.error?.message || 'HTTP '+res.status}`); }
+      const d = await res.json();
+      raw = d?.choices?.[0]?.message?.content || '';
+
+    } else if (currentModel === 'gemini') {
+      res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents:[{parts:[{text:prompt}]}], generationConfig:{temperature:0.92,maxOutputTokens:2048} })
+      });
+      if (res.status === 429) {
+        if (attempt === retries) throw new Error('Rate limit (429). Please wait and retry.');
+        showStatus(`Rate limited — retrying in 2s (${attempt}/${retries})...`);
+        await new Promise(r => setTimeout(r, 2000)); continue;
+      }
+      if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(`Gemini API: ${e?.error?.message || 'HTTP '+res.status}`); }
+      const d = await res.json();
+      raw = d?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+    } else if (currentModel === 'deepseek') {
+      res = await fetch('https://api.deepseek.com/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+        body: JSON.stringify({ model: 'deepseek-chat', max_tokens: 2048, messages: [{ role: 'user', content: prompt }] })
+      });
+      if (res.status === 429) {
+        if (attempt === retries) throw new Error('Rate limit (429). Please wait and retry.');
+        showStatus(`Rate limited — retrying in 2s (${attempt}/${retries})...`);
+        await new Promise(r => setTimeout(r, 2000)); continue;
+      }
+      if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(`DeepSeek API: ${e?.error?.message || 'HTTP '+res.status}`); }
+      const d = await res.json();
+      raw = d?.choices?.[0]?.message?.content || '';
+    }
+
+    return raw;
+  }
+}
+
+// ── JSON SAFETY ───────────────────────────────────
+function safeParseJSON(raw) {
+  let clean = raw
+    .replace(/```json[\s\S]*?```/gi, m => m.replace(/```json\s*/i,'').replace(/```$/,''))
+    .replace(/```[\s\S]*?```/g, m => m.replace(/```\w*\s*/g,'').replace(/```/g,''))
+    .trim();
+  const match = clean.match(/\[[\s\S]*\]/);
+  if (!match) throw new Error('No JSON array found. Please try again.');
+  return JSON.parse(match[0]);
+}
+
+// ── COLOUR HELPERS ────────────────────────────────
+function extractHexColors(text) {
+  return [...new Set([...text.matchAll(/#([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})\b/g)].map(m=>m[0]))].slice(0,5);
+}
+function extractTextures(text) {
+  return text.replace(/#[0-9A-Fa-f]{3,6}\b/g,'').replace(/,\s*,/g,',').replace(/^\s*[,;]\s*/,'').trim();
+}
+function itemColors(item) {
+  return extractHexColors(item.palette || item.Palette || item['Visual Palette'] || '');
+}
+
+// ── RENDER CARDS ─────────────────────────────────
+function renderCards(names) {
+  const area = document.getElementById('results-area');
+  area.innerHTML = `
+    <div class="results-header">
+      <div class="results-title">// Identity Transmission Complete</div>
+      <div class="results-line"></div>
+      <button class="btn-pdf" onclick="downloadPDF()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PDF
+      </button>
+    </div>`;
+
+  names.forEach((item, i) => {
+    const name     = item.name    || item.Name    || 'Unknown';
+    const soul     = item.soul    || item.Soul    || item['The Soul']       || '';
+    const palette  = item.palette || item.Palette || item['Visual Palette'] || '';
+    const colors   = extractHexColors(palette);
+    const textures = extractTextures(palette);
+    const glow     = GLOW_COLORS[i % GLOW_COLORS.length];
+    const swatchesHTML = colors.map(hex => `
+      <div class="palette-swatch">
+        <div class="swatch-color" style="background:${hex}"></div>
+        <div class="swatch-hex">${hex}</div>
+      </div>`).join('');
+    const card = document.createElement('div');
+    card.className = 'identity-card';
+    card.innerHTML = `
+      <div class="card-glow" style="background:${glow}"></div>
+      <div class="card-num">IDENTITY 0${i+1} / 05</div>
+      <div class="card-name">${name}</div>
+      <div class="card-divider"></div>
+      <div class="card-soul-label">The Soul</div>
+      <div class="card-soul">${soul}</div>
+      ${colors.length > 0 || textures ? `
+        <div class="card-palette-label">Visual Palette</div>
+        <div class="palette-row">
+          ${swatchesHTML}
+          ${textures ? `<div class="palette-textures">${textures}</div>` : ''}
+        </div>` : ''}`;
+    area.appendChild(card);
+  });
+  area.classList.add('visible');
+  area.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// ── PDF ───────────────────────────────────────────
+function buildPrintPayload(session) {
+  const { names, params, timestamp } = session;
+  const date = new Date(timestamp).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  const essenceLine = params.essences?.length ? params.essences.join(' · ') : 'No essence selected';
+  const modelLine   = params.model ? `Model: ${MODELS[params.model]?.label || params.model}` : '';
+
+  const cardsHTML = names.map((item, i) => {
+    const name    = item.name    || item.Name    || 'Unknown';
+    const soul    = item.soul    || item.Soul    || item['The Soul']       || '';
+    const palette = item.palette || item.Palette || item['Visual Palette'] || '';
+    const colors  = extractHexColors(palette);
+    const textures= extractTextures(palette);
+    const swatches= colors.map(hex => `
+      <div class="pp-swatch-wrap">
+        <div class="pp-swatch" style="background:${hex};-webkit-print-color-adjust:exact;print-color-adjust:exact;"></div>
+        <div class="pp-swatch-hex">${hex}</div>
+      </div>`).join('');
+    return `
+      <div class="pp-card">
+        <div class="pp-card-num">Identity 0${i+1} / 05</div>
+        <div class="pp-card-name">${name}</div>
+        <div class="pp-rule"></div>
+        <div class="pp-soul-label">The Soul</div>
+        <div class="pp-soul">${soul}</div>
+        ${colors.length > 0 || textures ? `
+          <div class="pp-palette-label">Visual Palette</div>
+          <div class="pp-swatches">
+            ${swatches}
+            ${textures ? `<div class="pp-textures">${textures}</div>` : ''}
+          </div>` : ''}
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="pp-cover">
+      <div class="pp-logo-line">DiegosDev Studio — The Nominarium</div>
+      <div class="pp-title">Brand Identity Report</div>
+      <div class="pp-entity">${params.entity || ''}</div>
+      <div class="pp-meta">Generated: ${date} &nbsp;·&nbsp; ${essenceLine} &nbsp;·&nbsp; ${modelLine}</div>
+    </div>
+    ${cardsHTML}
+    <div class="pp-footer">The Nominarium · AI Brand Identity Engine · DiegosDev Studio</div>`;
+}
+
+function downloadPDF(sessionOverride) {
+  const session = sessionOverride || currentSession;
+  if (!session) return;
+  document.getElementById('print-payload').innerHTML = buildPrintPayload(session);
+  window.print();
+}
+
+// ── HISTORY ───────────────────────────────────────
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; }
+}
+function saveHistory(sessions) { localStorage.setItem(HISTORY_KEY, JSON.stringify(sessions)); }
+function addToHistory(session) {
+  let s = loadHistory();
+  s.unshift(session);
+  if (s.length > MAX_SESSIONS) s = s.slice(0, MAX_SESSIONS);
+  saveHistory(s); updateHistBadge();
+}
+function deleteSession(id) {
+  saveHistory(loadHistory().filter(s => s.id !== id));
+  updateHistBadge(); renderHistoryPage();
+}
+function clearAllHistory() {
+  if (!confirm('Clear all saved sessions? This cannot be undone.')) return;
+  localStorage.removeItem(HISTORY_KEY); updateHistBadge(); renderHistoryPage();
+}
+function updateHistBadge() {
+  const n = loadHistory().length;
+  const badge = document.getElementById('hist-tab-badge');
+  badge.textContent = n; badge.classList.toggle('visible', n > 0);
+}
+
+function renderHistoryPage() {
+  const container = document.getElementById('hist-sessions-container');
+  const sessions  = loadHistory();
+  if (sessions.length === 0) {
+    container.innerHTML = `
+      <div class="hist-empty">
+        <div class="hist-empty-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="hist-empty-title">No Sessions Yet</div>
+        <div class="hist-empty-sub">Your generated brand identities will appear here after each successful forge.</div>
+      </div>`; return;
+  }
+  container.innerHTML = `<div class="hist-sessions" id="hist-sessions-list"></div>`;
+  const list = document.getElementById('hist-sessions-list');
+
+  sessions.forEach(session => {
+    const date   = new Date(session.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const time   = new Date(session.timestamp).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+    const tags   = (session.params.essences || []).map(e => `<span class="hist-tag">${e}</span>`).join('');
+    const mKey   = session.params.model || 'anthropic';
+    const mInfo  = MODELS[mKey] || MODELS.anthropic;
+    const modelTag = `<span class="hist-model-tag" style="background:rgba(0,0,0,0.2);border:1px solid ${mInfo.color}33;color:${mInfo.color}">${mInfo.label}</span>`;
+    const names  = session.names || [];
+
+    const namesHTML = names.map(item => {
+      const name   = item.name  || item.Name  || 'Unknown';
+      const soul   = item.soul  || item.Soul  || item['The Soul'] || '';
+      const colors = itemColors(item);
+      const swatchHTML = colors.slice(0,4).map(hex => `<div class="hist-swatch" style="background:${hex}"></div>`).join('');
+      return `
+        <div class="hist-name-row">
+          <div class="hist-name-swatches">${swatchHTML}</div>
+          <div class="hist-name-info">
+            <div class="hist-name-text">${name}</div>
+            <div class="hist-soul-text">${soul}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    const el = document.createElement('div');
+    el.className = 'hist-session';
+    el.id = 'sess-' + session.id;
+    el.innerHTML = `
+      <div class="hist-session-header" onclick="toggleSession('${session.id}')">
+        <div class="hist-session-meta">
+          <div class="hist-session-date">${date} &nbsp;·&nbsp; ${time}</div>
+          <div class="hist-session-entity">${session.params.entity || 'Untitled session'}</div>
+          <div class="hist-session-tags">${tags}${modelTag}</div>
+        </div>
+        <div class="hist-session-actions">
+          <button class="btn-hist-pdf" onclick="event.stopPropagation(); downloadPDF(${JSON.stringify(session).replace(/"/g,'&quot;')})">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            PDF
+          </button>
+          <button class="btn-hist-delete" onclick="event.stopPropagation(); deleteSession('${session.id}')" title="Delete">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          </button>
+          <svg class="hist-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+      <div class="hist-session-body">${namesHTML}</div>`;
+    list.appendChild(el);
+  });
+}
+
+function toggleSession(id) {
+  const el = document.getElementById('sess-' + id);
+  if (el) el.classList.toggle('open');
+}
+
+// ── MAIN GENERATE ────────────────────────────────
+async function generate() {
+  if (isGenerating) return;
+  clearError();
+
+  const entity      = document.getElementById('v-entity').value.trim();
+  const identity    = document.getElementById('v-identity').value.trim();
+  const concept     = document.getElementById('v-concept').value.trim();
+  const constraints = document.getElementById('v-constraints').value.trim();
+  const essences    = [...ESSENCES];
+
+  if (!entity) { showError('⚠ Vector 01 (Entity) is required — describe the purpose before forging.'); return; }
+
+  const key = localStorage.getItem(MODELS[currentModel].storageKey);
+  if (!key) { showError(`⚠ No API key for ${MODELS[currentModel].label}. Click "API Keys" to configure.`); return; }
+
+  isGenerating = true;
+  document.getElementById('gen-btn').disabled = true;
+  document.getElementById('results-area').classList.remove('visible');
+  showStatus(`${MODELS[currentModel].label} is forging identities...`);
+
+  const essenceText = essences.length > 0
+    ? `Luxury Essence Signatures: ${essences.join(', ')}.`
+    : 'No essence signatures selected — apply expert creative judgment.';
+
+  const prompt = `You are a world-class Brand Consultant and naming oracle specializing in luxury, culturally resonant, and strategically precise brand identities.
+
+A client has submitted the following 4-Vector Parameter Brief:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+VECTOR 01 — ENTITY
+"${entity}"
+
+VECTOR 02 — IDENTITY PARAMETERS
+"${identity || 'Not specified — infer from Vectors 01 and 03.'}"
+
+VECTOR 03 — CONCEPTUAL VECTORS
+"${concept || 'Not specified — derive from Entity context.'}"
+
+VECTOR 04 — CONSTRAINT PARAMETERS
+"${constraints || 'No constraints — full creative latitude.'}"
+
+ESSENCE SIGNATURES: ${essenceText}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Generate exactly 5 curated, premium brand names. Respond ONLY with a raw JSON array — no markdown fences, no preamble.
+
+Each object must have exactly:
+- "name": brand name (string)
+- "soul": one evocative sentence — the brand philosophy (string)
+- "palette": HEX color codes + 2–3 material/texture descriptors (string)
+
+Example: [{"name":"Velourne","soul":"Where ancestral ritual meets tomorrow's skin.","palette":"#1C1917, #D4B483, #F7F3EE — aged parchment, gold leaf, raw linen"}]
+
+Generate now:`;
+
+  try {
+    const raw = await callAPI(prompt);
+    showStatus('Parsing identity data...');
+    const names = safeParseJSON(raw);
+    if (!Array.isArray(names) || names.length === 0) throw new Error('Invalid response. Please try again.');
+    clearStatus();
+    renderCards(names);
+    const session = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+      timestamp: Date.now(), names,
+      params: { entity, identity, concept, constraints, essences, model: currentModel }
+    };
+    currentSession = session;
+    addToHistory(session);
+  } catch (err) {
+    clearStatus(); showError(`⚠ ${err.message}`);
+  } finally {
+    isGenerating = false;
+    document.getElementById('gen-btn').disabled = false;
+  }
+}
+
+// ── INIT ─────────────────────────────────────────
+checkKey();
+updateHistBadge();
+</script>
+</body>
+</html>
