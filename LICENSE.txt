@@ -1,0 +1,101 @@
+MIT License
+
+Copyright (c) 2025 DiegosDev Studio
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+THIRD-PARTY NOTICES
+====================
+
+Google Fonts
+------------
+This application loads the following typefaces via Google Fonts CDN:
+
+  Outfit
+  Copyright 2020 The Outfit Project Authors (https://github.com/Outfitio/Outfit-Fonts)
+  Licensed under the SIL Open Font License, Version 1.1
+
+  Rajdhani
+  Copyright 2015 The Rajdhani Project Authors (https://github.com/itfoundry/Rajdhani)
+  Licensed under the SIL Open Font License, Version 1.1
+
+  Space Mono
+  Copyright 2016 The Space Mono Project Authors (https://github.com/googlefonts/spacemono)
+  Licensed under the SIL Open Font License, Version 1.1
+
+  Full text of the SIL Open Font License 1.1 is available at:
+  https://scripts.sil.org/OFL
+
+---
+
+Anthropic API
+-------------
+This application optionally connects to the Anthropic API (Claude 3.5 Sonnet).
+Use of the Anthropic API is subject to Anthropic's Terms of Service and
+Privacy Policy:
+
+  Terms of Service: https://www.anthropic.com/legal/aup
+  Privacy Policy:   https://www.anthropic.com/legal/privacy
+
+API keys are stored solely in the user's local browser storage (localStorage)
+and are never transmitted to any party other than Anthropic's API endpoints.
+
+---
+
+OpenAI API
+----------
+This application optionally connects to the OpenAI API (GPT-4o).
+Use of the OpenAI API is subject to OpenAI's Terms of Service and
+Privacy Policy:
+
+  Terms of Service: https://openai.com/policies/terms-of-use
+  Privacy Policy:   https://openai.com/policies/privacy-policy
+
+API keys are stored solely in the user's local browser storage (localStorage)
+and are never transmitted to any party other than OpenAI's API endpoints.
+
+---
+
+Google Gemini API
+-----------------
+This application optionally connects to the Google Gemini API (Gemini 1.5 Pro).
+Use of the Gemini API is subject to Google's Terms of Service and
+Privacy Policy:
+
+  Terms of Service: https://ai.google.dev/gemini-api/terms
+  Privacy Policy:   https://policies.google.com/privacy
+
+API keys are stored solely in the user's local browser storage (localStorage)
+and are never transmitted to any party other than Google's API endpoints.
+
+---
+
+DeepSeek API
+------------
+This application optionally connects to the DeepSeek API (deepseek-chat).
+Use of the DeepSeek API is subject to DeepSeek's Terms of Service and
+Privacy Policy:
+
+  Terms of Service: https://www.deepseek.com/terms
+  Privacy Policy:   https://www.deepseek.com/privacy
+
+API keys are stored solely in the user's local browser storage (localStorage)
+and are never transmitted to any party other than DeepSeek's API endpoints.
